@@ -1,17 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loan Application Form</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121932;
+      --muted: #9aa3b2;
+      --text: #e8ecf1;
+      --accent: #6aa3ff;
+      --accent-2: #22c55e;
+      --danger: #ef4444;
+    }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% -10%, #1a2454 0%, transparent 40%),
+                  radial-gradient(1200px 600px at 120% 20%, #0d5e8a 0%, transparent 35%),
+                  var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+    .card {
+      width: min(1100px, 95vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .header h1 { font-size: 1.25rem; margin: 0; }
+    .sub { color: var(--muted); font-size: .95rem; }
+    form { padding: 1.5rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .field { display: grid; gap: .4rem; }
+    label { font-weight: 600; font-size: .95rem; }
+    .hint { color: var(--muted); font-size: .85rem; }
+
+    select, input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: .75rem .85rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    select:focus, input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(106,163,255,.2);
+    }
+
+    .actions { display: flex; gap: .75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    button {
+      padding: .85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--accent);
+      color: #0b1220;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .05s ease, filter .15s ease;
+    }
+    button.secondary { background: transparent; color: var(--text); }
+    button:active { transform: translateY(1px); }
+
+    .error { color: var(--danger); font-size: .85rem; display: none; }
+    .success {
+      display: none;
+      margin: 0 1.5rem 1.25rem;
+      padding: .9rem 1rem;
+      border-radius: 12px;
+      background: rgba(34, 197, 94, .12);
+      border: 1px solid rgba(34, 197, 94, .35);
+      color: #bbf7d0;
+      font-weight: 600;
+    }
+    .footer-note { color: var(--muted); font-size: .8rem; margin-top: .5rem; }
+  </style>
 </head>
 <body>
-    <h1>I am Django template</h1>
+  <div class="card">
+    <div class="header">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M3 10c0-3.866 3.582-7 8-7s8 3.134 8 7v2h1a1 1 0 0 1 1 1v7a2 2 0 0 1-2 2H3.999A2 2 0 0 1 2 20v-7a1 1 0 0 1 1-1h1v-2Z" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M7 20v-6a5 5 0 1 1 10 0v6" stroke="currentColor" stroke-width="1.4"/>
+      </svg>
+      <div>
+        <h1>Loan Application</h1>
+        <div class="sub">Fill the form below and submit to proceed.</div>
+      </div>
+    </div>
+
+    <div id="success" class="success" role="status">Form is valid. Ready to submit!</div>
+
     <form action="/pred/" method="post">
-        {% csrf_token %}
-        <p>Year of experience</p>
-        <p><input type="text" name="exp" /></p>
-        <p><input type="submit" name="predict" value="Predict" /></p>
+      {% csrf_token %}
+
+      <div class="grid">
+        <!-- Gender -->
+        <div class="field">
+          <label for="gender">Gender</label>
+          <select id="gender" name="Gender" required>
+            <option value="" disabled selected>Select</option>
+            <option value=1>Male</option>
+            <option value=2>Female</option>
+            
+          </select>
+          <div class="error">Please select a gender.</div>
+        </div>
+
+        <!-- Married -->
+        <div class="field">
+          <label for="married">Married</label>
+          <select id="married" name="Married" required>
+            <option value="" disabled selected>Select</option>
+            <option value=0>Yes</option>
+            <option value=1>No</option>
+          </select>
+          <div class="error">Please choose if married.</div>
+        </div>
+
+        <!-- Dependents -->
+        <div class="field">
+          <label for="dependents">Dependents</label>
+          <select id="dependents" name="Dependents" required>
+            <option value="" disabled selected>Select</option>
+            <option value=0>0</option>
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3+</option>
+          </select>
+          <div class="error">Please select dependents.</div>
+        </div>
+
+        <!-- Education -->
+        <div class="field">
+          <label for="education">Education</label>
+          <select id="education" name="Education" required>
+            <option value="" disabled selected>Select</option>
+            <option value=0>Graduate</option>
+            <option value=1>Not Graduate</option>
+          </select>
+          <div class="error">Please select education level.</div>
+        </div>
+
+        <!-- Self Employed -->
+        <div class="field">
+          <label for="self_employed">Self Employed</label>
+          <select id="self_employed" name="Self_Employed" required>
+            <option value="" disabled selected>Select</option>
+            <option value=1>Yes</option>
+            <option value=0>No</option>
+          </select>
+          <div class="error">Please choose an option.</div>
+        </div>
+
+        <!-- ApplicantIncome -->
+        <div class="field">
+          <label for="applicant_income">Applicant Income</label>
+          <input id="applicant_income" name="ApplicantIncome" type="number" inputmode="decimal" min="0" step="1" placeholder="e.g., 50000" required />
+          <div class="hint">Annual income in INR.</div>
+          <div class="error">Enter a valid non-negative number.</div>
+        </div>
+
+        <!-- CoapplicantIncome -->
+        <div class="field">
+          <label for="coapplicant_income">Coapplicant Income</label>
+          <input id="coapplicant_income" name="CoapplicantIncome" type="number" inputmode="decimal" min="0" step="1" placeholder="e.g., 20000" required />
+          <div class="hint">Annual income in INR.</div>
+          <div class="error">Enter a valid non-negative number.</div>
+        </div>
+
+        <!-- LoanAmount -->
+        <div class="field">
+          <label for="loan_amount">Loan Amount</label>
+          <input id="loan_amount" name="LoanAmount" type="number" inputmode="decimal" min="0" step="1" placeholder="e.g., 150" required />
+          <div class="hint">Principal amount in thousands (e.g., 150 = ₹150,000).
+          </div>
+          <div class="error">Enter a valid non-negative number.</div>
+        </div>
+
+        <!-- Loan_Amount_Term -->
+        <div class="field">
+          <label for="loan_term">Loan Amount Term</label>
+          <input id="loan_term" name="Loan_Amount_Term" type="number" min="1" step="1" placeholder="e.g., 360" required />
+          <div class="hint">Term in months (e.g., 360 = 30 years).</div>
+          <div class="error">Enter a valid term (months).</div>
+        </div>
+
+        <!-- Credit_History -->
+        <div class="field">
+          <label for="credit_history">Credit History</label>
+          <select id="credit_history" name="Credit_History" required>
+            <option value="" disabled selected>Select</option>
+            <option value=1>1 – Meets guidelines</option>
+            <option value=1>0 – Does not meet</option>
+          </select>
+          <div class="error">Please select credit history.</div>
+        </div>
+
+        <!-- Property_Area -->
+        <div class="field">
+          <label for="property_area">Property Area</label>
+          <select id="property_area" name="Property_Area" required>
+            <option value="" disabled selected>Select</option>
+            <option value=2>Urban</option>
+            <option value=1>Semiurban</option>
+            <option value=0>Rural</option>
+          </select>
+          <div class="error">Please select property area.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="submit">Submit</button>
+        <button type="reset" class="secondary">Reset</button>
+      </div>
+      <div class="footer-note">Fields marked as select/number are required.</div>
     </form>
+  </div>
 </body>
 </html>
